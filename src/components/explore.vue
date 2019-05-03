@@ -16,8 +16,8 @@ export default {
     var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
     mapboxgl.accessToken = 'pk.eyJ1IjoibXJjaXNjb3NlcmthIiwiYSI6ImNqdjdtb3k5ZTAxZGo0ZHFubTFqdzc4bHoifQ.NTXtmesugzahUhMA4We-iw';
     var map = new mapboxgl.Map({
-    container: 'explore',
-    style: 'mapbox://styles/mapbox/streets-v11'
+      container: 'explore',
+      style: 'mapbox://styles/mapbox/streets-v11'
     });
 
     var url = 'https://wanderdrone.appspot.com/';
@@ -45,8 +45,18 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-body { margin:0; padding:0; }
+@import '../../node_modules/mapbox-gl/dist/mapbox-gl.css';
 
-#explore { position:absolute; top:0; bottom:0; width:100%; }
+  body { 
+    margin:0; 
+    padding:0; 
+  }
+
+  #explore { 
+    position:absolute; 
+    top:0; 
+    bottom:0; 
+    width:100%; 
+  }
 
 </style>
