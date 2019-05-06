@@ -1,8 +1,13 @@
-var express = require('express');
-var path = require('path');
-var serveStatic = require('serve-static');
-app = express();
+const express = require('express'),
+      path = require('path'),
+      serveStatic = require('serve-static'),
+      app = express(),
+      locations   = require('./routes/locations');
+
 app.use(serveStatic(__dirname + "/dist"));
-var port = process.env.PORT || 5000;
+const port = process.env.PORT || 5000;
 app.listen(port);
 console.log('server started '+ port);
+
+// Routes
+app.use('/locations', locations);
