@@ -111,7 +111,8 @@ export default {
 
   },
   mounted(){
-    let locationsAux = {
+
+    /* let locationsAux = {
       "type": "FeatureCollection",
       "features": [
         {"type":"Feature","geometry":{"type":"Point","coordinates":[-110.38930378,24.49878207]},"properties":{"loc_id":44,"loc_name":"Espíritu Santo - North spot","status":"beach","rating":4,"picture":"https://lh5.ggpht.com/p/AF1QipPpKbEYUmVNSaCXBVwlVyYEon_M8KLNpqUNwEmI=w1304"}},
@@ -124,16 +125,16 @@ export default {
         {"type":"Feature","geometry":{"type":"Point","coordinates":[-71.46259,42.99019]},"properties":{"loc_id":51,"loc_name":"Manchester, NH","status":"closed","rating":1,"picture":"none"}},
         {"type":"Feature","geometry":{"type":"Point","coordinates":[-96.75724,32.90977]},"properties":{"loc_id":52,"loc_name":"TI Blvd, TX","status":"closed","rating":3,"picture":"none"}}
       ]
-    }
-
-    /* axios.get('/locations')
+    } */
+    /* this.locations = locationsAux; */
+    console.log("1");
+    console.log(axios);
+    axios.get('/locations')
     .then(result => {
-      this.locations = result.data; 
       //Beware with arrow functions and THIS
-      */
-     this.locations = locationsAux;
-     /*  debugger;
-      let x = this.locations.features[0].geometry.coordinates[0];
+      this.locations = result.data; 
+
+      /* let x = this.locations.features[0].geometry.coordinates[0];
       console.log(' X: ' + x);
       let y = this.locations.features[0].geometry.coordinates[1];
       console.log(' Y: ' + y);
@@ -143,95 +144,94 @@ export default {
       let coordinates = this.locations.features[0].geometry.coordinates;
       console.log('Coordinates: ' + coordinates);
       
-    mapboxgl.accessToken = 'pk.eyJ1IjoibXJjaXNjb3NlcmthIiwiYSI6ImNqdjdtb3k5ZTAxZGo0ZHFubTFqdzc4bHoifQ.NTXtmesugzahUhMA4We-iw';
-    let map = new mapboxgl.Map({
-      container: 'explore',
-      style: 'mapbox://styles/mapbox/satellite-v9',
-      center: [-110.127475, 23.895643],
-      zoom: 8
-    });
-    this.vMap = map;
-    let self = this;
+      mapboxgl.accessToken = 'pk.eyJ1IjoibXJjaXNjb3NlcmthIiwiYSI6ImNqdjdtb3k5ZTAxZGo0ZHFubTFqdzc4bHoifQ.NTXtmesugzahUhMA4We-iw';
+      let map = new mapboxgl.Map({
+        container: 'explore',
+        style: 'mapbox://styles/mapbox/satellite-v9',
+        center: [-110.127475, 23.895643],
+        zoom: 8
+      });
+      this.vMap = map;
+      let self = this;
 
-    let campLayer = { //with source
-      "id": "symbols",
-      "type": "symbol",
-      "source": {
-          "type": "geojson",
-          "data": {
-              /* "type": "FeatureCollection",
-              "features": [] */
-          }
-      },
-     "layout": {
-        "icon-image": "cat",
-        "icon-size": 1.2
-      }
-    };
-
-    let campLayer_noSource = { // without source
-      "id": "symbols",
-      "type": "symbol",
-      "source": 'camps',
+      let campLayer = { //with source
+        "id": "symbols",
+        "type": "symbol",
+        "source": {
+            "type": "geojson",
+            "data": {
+                /* "type": "FeatureCollection",
+                "features": [] */
+            }
+        },
       "layout": {
-        "icon-image": "marker",
-        "icon-size": 1.2
-      }
-    };
-    campLayer.source.data = locationsAux;
-    
-    /* 
-    http://localhost:8080/assets/robonomics.png 
-    https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/400px-Cat_silhouette.svg.png
-    */
+          "icon-image": "cat",
+          "icon-size": 1.2
+        }
+      };
 
-    map.on('load', () => {
-      map.loadImage('https://i.imgur.com/aAIk82g.png', function(error, image) {
-        if (error) throw error;
-        map.addImage('marker', image);
-        map.addSource('camps', { type: 'geojson', data: self.locations });
-        map.addLayer(campLayer_noSource);
+      let campLayer_noSource = { // without source
+        "id": "symbols",
+        "type": "symbol",
+        "source": 'camps',
+        "layout": {
+          "icon-image": "marker",
+          "icon-size": 1.2
+        }
+      };
+      campLayer.source.data = this.locations;
+      
+      /* 
+      http://localhost:8080/assets/robonomics.png 
+      https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/400px-Cat_silhouette.svg.png
+      */
 
-      map.on('click', 'symbols', function (e) {
-        if(self.isSelected) self.resetInputs();
-        self.newCamp = null;
-        self.updateProp = {rating: 6, name: '', status: '',};
-        self.btnEdit = true;
-        self.isSelected = true;
-        self.stars = '';
-        map.flyTo(
-          {
-            center: e.features[0].geometry.coordinates,
-            zoom: 11
-          });
+      map.on('load', () => {
+        map.loadImage('https://i.imgur.com/aAIk82g.png', function(error, image) {
+          if (error) throw error;
+          map.addImage('marker', image);
+          map.addSource('camps', { type: 'geojson', data: self.locations });
+          map.addLayer(campLayer_noSource);
+
+        map.on('click', 'symbols', function (e) {
+          if(self.isSelected) self.resetInputs();
+          self.newCamp = null;
+          self.updateProp = {rating: 6, name: '', status: '',};
+          self.btnEdit = true;
+          self.isSelected = true;
+          self.stars = '';
+          map.flyTo(
+            {
+              center: e.features[0].geometry.coordinates,
+              zoom: 11
+            });
           self.camp.loc_id = e.features[0].properties.loc_id;
           self.camp.name = e.features[0].properties.loc_name;
           self.camp.status = e.features[0].properties.status;
           self.camp.rating = e.features[0].properties.rating;
           self.camp.picture = e.features[0].properties.picture;
           self.drawRating();
-          
-      });
+        });
 
-      //Reload map's data every 4s
-      let timer = window.setInterval(function() {
-          map.getSource('camps').setData(self.locations);
-          /* window.clearInterval(timer); */
-      }, 4000);
+        //Reload map's data every 4s
+        let timer = window.setInterval(function() {
+            map.getSource('camps').setData(self.locations);
+            /* window.clearInterval(timer); */
+        }, 4000);
 
-      map.on('mouseenter', 'symbols', function () {
-        map.getCanvas().style.cursor = 'pointer';
-      });
+        map.on('mouseenter', 'symbols', function () {
+          map.getCanvas().style.cursor = 'pointer';
+        });
 
-      map.on('mouseleave', 'symbols', function () {
-        map.getCanvas().style.cursor = '';
+        map.on('mouseleave', 'symbols', function () {
+          map.getCanvas().style.cursor = '';
+        });
+        /*"properties": {
+          "description": "<strong>Make it Mount Pleasant</strong> <p><a href=\"http://www.mtpleasantdc.com/makeitmtpleasant\" target=\"_blank\" title=\"Opens in a new window\">Make it Mount Pleasant</a> is a handmade and vintage market and afternoon of live entertainment and kids activities. 12:00-6:00 p.m.</p>",
+          "icon": "theatre"
+          }, */
+        });
       });
-      /*"properties": {
-        "description": "<strong>Make it Mount Pleasant</strong> <p><a href=\"http://www.mtpleasantdc.com/makeitmtpleasant\" target=\"_blank\" title=\"Opens in a new window\">Make it Mount Pleasant</a> is a handmade and vintage market and afternoon of live entertainment and kids activities. 12:00-6:00 p.m.</p>",
-        "icon": "theatre"
-        }, */
-    });
-  });
 
 
       /* this.locations.features.forEach(mark => {
@@ -242,10 +242,10 @@ export default {
         .addTo(map);
       }); */
       
-   /*  }).catch(e => {
+    }).catch(e => {
       console.log('Error in: ');
       console.log(e);
-    }); */
+    });
 
 
   },
@@ -307,7 +307,7 @@ export default {
       this.updateProp.status = property;
     },
     saveEdit: function (){
-      let localCamp = this.locations.features.find(x => x.properties.loc_id == this.camp.loc_id)
+      let localCamp = this.locations.features.find(x => x.properties.loc_id == this.camp.loc_id);
 
       if(this.updateProp.name){
         this.camp.name = this.updateProp.name.slice(0);
@@ -321,14 +321,16 @@ export default {
         this.camp.rating = this.updateProp.rating;
         localCamp.properties.rating = this.updateProp.rating;
       }
-
-      /* axios.post('/updateLocations', this.Camp)
+      console.log("2");
+      console.log(axios);
+      axios.get('/update', this.camp)
       .then(result => {
-        this.locations = result.data;
+        //Some flash message
+        console.log(result);
       }).catch(e => {
         console.log('Error in: ');
         console.log(e);
-      }); */
+      });
 
       this.resetInputs();
     },
