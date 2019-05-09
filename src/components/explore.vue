@@ -4,7 +4,7 @@
       <header>
           <h2>Places to Camp in The Baja!</h2>
           <div class="useful-links">
-              <p class="centerMap" v-on:click='centerMap'>Center map <img src="../assets/center.svg" alt="Center Europe"></p>
+              <p class="centerMap" v-on:click='centerMap'>Center map <img src="../assets/center.svg" alt="Center map"></p>
           </div>
       </header>
       <div class="map-state-information">
@@ -30,6 +30,7 @@
             <label for="Waterfall">Waterfall</label> -->
 
             <h4 v-show='!isSelected'>Select a camp!  <img src="https://i.imgur.com/aAIk82g.png" alt="marker"> </h4>  
+            <h5 v-show='!isSelected'>... and see the camp details </h5>
         </section>
 
         <!-- Camp Details -->
