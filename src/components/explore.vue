@@ -392,11 +392,15 @@ export default {
   }
 
   h4{
-    margin: 3.2em 0;
+        margin-top: 3.2em;
     text-align: center;
     font-size: x-large;
   }
-
+  h5{
+    margin: 1em 0;
+    text-align: center;
+    margin-bottom: 4em;
+  }
   #explore { 
     position:absolute; 
     top:0; 

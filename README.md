@@ -12,7 +12,7 @@ This challenge was made with:
 
 Here is the demo [link to skycatch-geoApp!](https://skycatch-geoapp.herokuapp.com)
 
-The map shows some of the best places for camping in the Baja Peninsula
+The map shows some of the best places for camping in the **Baja Peninsula**
 
 In this **version 1.0** you can see and edit:
 * Name of the location
@@ -24,8 +24,9 @@ Further versions will have implement:
 * A loading effect when you update the camp's details
 * A pop-up picture whe you click the spot
 
-This version has update the locations details every 4s with a setInterval method
-asking to the **db** for the data.
+This version update the locations details every **4s** with a *setInterval* method asking to the **db** for the data.
+
+So, to avoid **excessive** request to db, there is a *button* below the camp details to **stop** the interval. This will stop the automatic update.
 
 
 
