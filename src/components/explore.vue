@@ -8,49 +8,63 @@
           </div>
       </header>
       <div class="map-state-information">
-          <section class="camps-display">
-              <!-- <h3>Filter:</h3> 
-              
-              <br>
-              <input type="radio" id="Valley" name="campType" value="valley">
-              <label for="Valley">Valley</label>
-              <input type="radio" id="All" name="campType" value="all">
-              <label for="All">All Again</label>
-              <select class="mapDataFilter">
-                  <option selected="selected" value="total">Status</option>
-                  <option value="rating">Rating > 8 </option>
-              </select>
 
-              <br>
-              <input v-if="filter.status" type="radio" id="Beaches" name="campType" value="beach">
-              <label for="Beaches">Beaches</label>
-              <input type="radio" id="Waterfall" name="campType" value="waterfall">
-              <label for="Waterfall">Waterfall</label> -->
-              <h4 v-show='!isSelected'>Select a camp!  <img src="https://i.imgur.com/aAIk82g.png" alt="marker"> </h4>  
-              <!-- <i class="fa fa-star"></i> -->
-              <!-- https://i.imgur.com/E8TdgXD.png -->
+        <!-- Filters -->
+        <section class="camps-display">
+            <!-- <h3>Filter:</h3> 
+            <br>
+            <select class="mapDataFilter">
+              <option selected="selected" value="total">Status</option>
+              <option value="rating">Rating > 8 </option>
+            </select>
 
-          </section>
-          <section class="details-display" v-if="isSelected">
-              <h3>Details:</h3> 
-              <button v-show="btnEdit" class='detailsBtn btn btn-info' v-on:click="changeEdit"><i class="far fa-edit"></i>Edit</button>
-              <input type="submit" value="Save Changes" v-show="!btnEdit" class="detailsBtn btn btn-success" v-on:click="saveEdit">
-              <input v-model='camp.name' v-on:change='changeName(camp.name)' disabled class="dataDetails" type="text" id="name" name="name" required
-                minlength="3" maxlength="70">
-              <input v-model='camp.status' v-on:change='changeStatus(camp.status)' disabled class="dataDetails" type="text" id="status" name="status" required
-                minlength="4" maxlength="10">        
-              <!-- <input v-model='camp.rating' disabled class="dataDetails" type="text" id="rating" name="rating" required
-              minlength="4" maxlength="8" size="10">     -->    
-              <div id='starsDiv' style="background-color: rgba(113, 226, 241, 0.596); width: 10vw;">
-                <br>
-                <p v-html="stars"> 
-                </p>
-                <p>{{camp.rating}} / 5</p>
-              </div>
-          </section>          
+            <input type="radio" id="Valley" name="campType" value="valley">
+            <label for="Valley">Valley</label>
+            <input type="radio" id="All" name="campType" value="all">
+            <label for="All">All Again</label>
+
+            <br>
+            <input v-if="filter.status" type="radio" id="Beaches" name="campType" value="beach">
+            <label for="Beaches">Beaches</label>
+            <input type="radio" id="Waterfall" name="campType" value="waterfall">
+            <label for="Waterfall">Waterfall</label> -->
+
+            <h4 v-show='!isSelected'>Select a camp!  <img src="https://i.imgur.com/aAIk82g.png" alt="marker"> </h4>  
+        </section>
+
+        <!-- Camp Details -->
+        <section class="details-display" v-if="isSelected">
+          <h3>Details:</h3> 
+
+          <div v-show="loader" class="circle-loader">
+            <div class="checkmark draw"></div>
+          </div>
+
+          <button v-show="btnEdit" class='detailsBtn btn btn-info' v-on:click="changeEdit"><i class="far fa-edit"></i>Edit</button>
+          <input type="submit" value="Save Changes" v-show="!btnEdit" class="detailsBtn btn btn-success" v-on:click="saveEdit">
+          <input v-model='camp.name' v-on:change='changeName(camp.name)' disabled class="dataDetails" type="text" id="name" name="name" required
+            minlength="3" maxlength="70">
+          <input v-model='camp.status' v-on:change='changeStatus(camp.status)' disabled class="dataDetails" type="text" id="status" name="status" required
+            minlength="4" maxlength="10">        
+
+          <!-- <input v-model='camp.rating' disabled class="dataDetails" type="text" id="rating" name="rating" required
+          minlength="4" maxlength="8" size="10">     -->    
+
+          <!-- Dynamic Stars Rating -->
+          <div id='starsDiv' style="background-color: rgba(113, 226, 241, 0.596); width: 10vw;">
+            <br>
+            <p v-html="stars"> 
+            </p>
+            <p>{{camp.rating}} / 5</p>
+          </div>
+        </section>   
+
+        <!-- Utility button to stop doing request to DB -->
+        <button class="btn btn-dark" v-on:click='stopInterval'> Stop getting data</button>
+
+        <!-- <button class="btn btn-light" v-on:click='resumeInterval'> Resume getting data</button> -->
       </div>
     </section>
-
   </div>
 </template>
 
@@ -63,6 +77,7 @@ export default {
   name: 'explore',
   data () {
     return {
+      /* Details for selected camp */
       camp:{
         loc_id: '',
         name: '',
@@ -70,6 +85,7 @@ export default {
         rating: '',
         picture: '',
       },
+      /* For dragable Marker */
       newCamp:{
         id: '',
         name: '',
@@ -77,6 +93,7 @@ export default {
         rating: '',
         picture: '',
       },
+      /* Update Properties */
       updateProp:{
         rating: 6,
         name: '',
@@ -88,60 +105,23 @@ export default {
       stars: '',
       starSpan: '',
       btnEdit: false,
+      timer: '',
+      loader: false,
     }
   },
   created(){
-    
-    /* var url = 'https://wanderdrone.appspot.com/';
-    map.on('load', function () {
-      window.setInterval(function() {
-        map.getSource('drone').setData(url);
-      }, 2000);
-      
-      map.addSource('drone', { type: 'geojson', data: url });
-      map.addLayer({
-        "id": "drone",
-        "type": "symbol",
-        "source": "drone",
-        "layout": {
-        "icon-image": "rocket-15"
-        }
-      });
-    }); */
-
+      //
   },
   mounted(){
 
-    /* let locationsAux = {
-      "type": "FeatureCollection",
-      "features": [
-        {"type":"Feature","geometry":{"type":"Point","coordinates":[-110.38930378,24.49878207]},"properties":{"loc_id":44,"loc_name":"Espíritu Santo - North spot","status":"beach","rating":4,"picture":"https://lh5.ggpht.com/p/AF1QipPpKbEYUmVNSaCXBVwlVyYEon_M8KLNpqUNwEmI=w1304"}},
-        {"type":"Feature","geometry":{"type":"Point","coordinates":[-110.39170184,24.56545271]},"properties":{"loc_id":45,"loc_name":"Campsite Fun Baja","status":"beach","rating":3,"picture":"https://lh5.ggpht.com/p/AF1QipN-IwWaJ5raPjGUYajEI7VIdQnSwzV8o2Kjpc46=w1304"}},
-        {"type":"Feature","geometry":{"type":"Point","coordinates":[-110.396266,24.580713]},"properties":{"loc_id":46,"loc_name":"Playa El Embudo","status":"beach","rating":4,"picture":"https://lh5.ggpht.com/p/AF1QipM-kEdabKjXjPV6cmjy8rkCifLW50UgDLbAWt6K=w1366"}},
-        {"type":"Feature","geometry":{"type":"Point","coordinates":[-110.29286882,24.31257349]},"properties":{"loc_id":47,"loc_name":"Playa Balandra","status":"beach","rating":4,"picture":"https://lh5.ggpht.com/p/AF1QipND92QJwRa8TTU--rka97MvXkavK0b_CcFnm91N=w1304"}},
-        {"type":"Feature","geometry":{"type":"Point","coordinates":[-109.794982,23.498625]},"properties":{"loc_id":48,"loc_name":"Cañón de la Zorra","status":"waterfall","rating":4,"picture":"https://lh5.ggpht.com/p/AF1QipM1dxJn5h-4NsvH7IuzyWBegIeVgfuP6h2Wdv7p=w1366"}},
-        {"type":"Feature","geometry":{"type":"Point","coordinates":[-109.974305,23.548591]},"properties":{"loc_id":49,"loc_name":"Valle Sierra de la Laguna","status":"valley","rating":5,"picture":"https://lh5.ggpht.com/p/AF1QipNOzhCgA0YslRWI9myGZbdjaIVxan0vrYn1Egxz=w1366"}},
-        {"type":"Feature","geometry":{"type":"Point","coordinates":[-71.2577,42.40047]},"properties":{"loc_id":50,"loc_name":"Waltham, MA","status":"closed","rating":1,"picture":"none"}},
-        {"type":"Feature","geometry":{"type":"Point","coordinates":[-71.46259,42.99019]},"properties":{"loc_id":51,"loc_name":"Manchester, NH","status":"closed","rating":1,"picture":"none"}},
-        {"type":"Feature","geometry":{"type":"Point","coordinates":[-96.75724,32.90977]},"properties":{"loc_id":52,"loc_name":"TI Blvd, TX","status":"closed","rating":3,"picture":"none"}}
-      ]
-    } */
-    /* this.locations = locationsAux; */
+    /* Get data from DB */
     axios.get('/locations')
     .then(result => {
-      //Beware with arrow functions and THIS
+      
+      /* Store camp's data in reactive variable */
       this.locations = result.data; 
 
-      /* let x = this.locations.features[0].geometry.coordinates[0];
-      console.log(' X: ' + x);
-      let y = this.locations.features[0].geometry.coordinates[1];
-      console.log(' Y: ' + y);
-      let coordinates = this.locations.features[0].geometry.coordinates;
-      console.log('Coordinates: ' + coordinates); */
-
-      let coordinates = this.locations.features[0].geometry.coordinates;
-      console.log('Coordinates: ' + coordinates);
-      
+      /* Init mapbox GL JS */
       mapboxgl.accessToken = 'pk.eyJ1IjoibXJjaXNjb3NlcmthIiwiYSI6ImNqdjdtb3k5ZTAxZGo0ZHFubTFqdzc4bHoifQ.NTXtmesugzahUhMA4We-iw';
       let map = new mapboxgl.Map({
         container: 'explore',
@@ -149,10 +129,15 @@ export default {
         center: [-110.127475, 23.895643],
         zoom: 8
       });
+      
+      /* vMap is used to flyTo */
       this.vMap = map;
+
+      /* Using self to avoid use this*/
       let self = this;
 
-      let campLayer = { //with source
+      /* This is not used */
+      let campLayer = {  //with source
         "id": "symbols",
         "type": "symbol",
         "source": {
@@ -167,7 +152,10 @@ export default {
           "icon-size": 1.2
         }
       };
+      /* This is not used (fill geojson with data) */
+      campLayer.source.data = this.locations;
 
+      /* This is used */
       let campLayer_noSource = { // without source
         "id": "symbols",
         "type": "symbol",
@@ -177,69 +165,76 @@ export default {
           "icon-size": 1.2
         }
       };
-      campLayer.source.data = this.locations;
-      
-      /* 
-      http://localhost:8080/assets/robonomics.png 
-      https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/400px-Cat_silhouette.svg.png
-      */
 
+      /* Init MapBox */
       map.on('load', () => {
+
+        /* Config Marker */
         map.loadImage('https://i.imgur.com/aAIk82g.png', function(error, image) {
           if (error) throw error;
           map.addImage('marker', image);
+
+          /* Add source and layer to map */
           map.addSource('camps', { type: 'geojson', data: self.locations });
           map.addLayer(campLayer_noSource);
 
-        map.on('click', 'symbols', function (e) {
-          if(self.isSelected) self.resetInputs();
-          self.newCamp = null;
-          self.updateProp = {rating: 6, name: '', status: '',};
-          self.btnEdit = true;
-          self.isSelected = true;
-          self.stars = '';
-          map.flyTo(
-            {
-              center: e.features[0].geometry.coordinates,
-              zoom: 11
+          map.on('click', 'symbols', function (e) {
+
+            /* Set camp details */
+            if(self.isSelected) self.resetInputs();
+            self.newCamp = null;
+            self.updateProp = {rating: 6, name: '', status: '',};
+            self.btnEdit = true;
+            self.isSelected = true;
+            self.stars = '';
+
+            /* Fly to this camp */
+            map.flyTo({center: e.features[0].geometry.coordinates, zoom: 11 });
+            self.camp.loc_id = e.features[0].properties.loc_id;
+            self.camp.name = e.features[0].properties.loc_name;
+            self.camp.status = e.features[0].properties.status;
+            self.camp.rating = e.features[0].properties.rating;
+            self.camp.picture = e.features[0].properties.picture;
+            self.drawRating();
+          });
+
+          //Reload map's data every 4s
+          self.timer = window.setInterval(function() {
+
+            //Get data from database
+            axios.get('/locations')
+            .then(result => {
+
+              //Refresh map's data
+              self.locations = result.data; 
+              map.getSource('camps').setData(self.locations);
+
+              //Update dataDetails in Frontend when Camp is Selected and it's not in edition
+              if(self.isSelected && self.btnEdit){
+                let localCamp = self.locations.features.find(x => x.properties.loc_id == self.camp.loc_id);
+                self.camp.name = localCamp.properties.loc_name;
+                self.camp.status = localCamp.properties.status;
+                self.camp.rating = localCamp.properties.rating;
+                self.stars = '';
+                self.drawRating();
+              }
+            }).catch(e => {
+              console.log('Error get: ');
+              console.log(e);
             });
-          self.camp.loc_id = e.features[0].properties.loc_id;
-          self.camp.name = e.features[0].properties.loc_name;
-          self.camp.status = e.features[0].properties.status;
-          self.camp.rating = e.features[0].properties.rating;
-          self.camp.picture = e.features[0].properties.picture;
-          self.drawRating();
+          }, 4000);
+
+          /* EventListener mouse on marker */
+          map.on('mouseenter', 'symbols', function () {
+            map.getCanvas().style.cursor = 'pointer';
+          });
+
+          /* EventListener mouse leave */
+          map.on('mouseleave', 'symbols', function () {
+            map.getCanvas().style.cursor = '';
+          });
         });
-
-        //Reload map's data every 4s
-        let timer = window.setInterval(function() {
-            map.getSource('camps').setData(self.locations);
-            /* window.clearInterval(timer); */
-        }, 4000);
-
-        map.on('mouseenter', 'symbols', function () {
-          map.getCanvas().style.cursor = 'pointer';
-        });
-
-        map.on('mouseleave', 'symbols', function () {
-          map.getCanvas().style.cursor = '';
-        });
-        /*"properties": {
-          "description": "<strong>Make it Mount Pleasant</strong> <p><a href=\"http://www.mtpleasantdc.com/makeitmtpleasant\" target=\"_blank\" title=\"Opens in a new window\">Make it Mount Pleasant</a> is a handmade and vintage market and afternoon of live entertainment and kids activities. 12:00-6:00 p.m.</p>",
-          "icon": "theatre"
-          }, */
-        });
-      });
-
-
-      /* this.locations.features.forEach(mark => {
-        coordinates = mark.geometry.coordinates;
-
-        const marker = new mapboxgl.Marker()
-        .setLngLat(coordinates)
-        .addTo(map);
-      }); */
-      
+      });  
     }).catch(e => {
       console.log('Error in: ');
       console.log(e);
@@ -248,17 +243,21 @@ export default {
 
   },
   methods: {
-    status: function status(e){
-      
+    resumeInterval: function(){
+      //
     },
+    
+    stopInterval: function(){
+      clearInterval(this.timer);
+    },
+
     centerMap: function () {
-    this.vMap
-      ?  this.vMap.flyTo({
-          center: [-110.127475, 23.895643],
-          zoom: 8
-        })
-      : ''
+      this.vMap ?  this.vMap.flyTo({
+                    center: [-110.127475, 23.895643],
+                    zoom: 8 })
+                : ''
     },
+
     drawRating: function () {
       let howMany = this.camp.rating;
       for(var i=1; i<=howMany; i++){
@@ -268,6 +267,7 @@ export default {
         this.stars += ` <span id=star_${parseInt(howMany+1)} class="far fa-star"></span> `;
       }
     },
+
     changeEdit: function (){
       this.btnEdit = false;
       const inputs = document.querySelectorAll("input[type=text]");
@@ -298,17 +298,25 @@ export default {
         }); 
       }
     },
+
     changeName: function(property){
       this.updateProp.name = property;
     },
+
     changeStatus: function(property){
       this.updateProp.status = property;
     },
-    saveEdit: function (){
-      let localCamp = this.locations.features.find(x => x.properties.loc_id == this.camp.loc_id);
 
+    saveEdit: function (){
+      this.loader = true;
+      let self = this;
+      let localCamp = this.locations.features.find(x => x.properties.loc_id == this.camp.loc_id);
       if(this.updateProp.name){
+
+        /* Update the camp object that gona be send to update DB */
         this.camp.name = this.updateProp.name.slice(0);
+
+        /* Update the camp inside the main geoJson  */
         localCamp.properties.loc_name = this.updateProp.name.slice(0);  
       } 
       if(this.updateProp.status){
@@ -320,23 +328,26 @@ export default {
         localCamp.properties.rating = this.updateProp.rating;
       }
       axios.post('/locations/update', this.camp)
-      .then(result => {
-        axios.get('/locations')
-        .then(result => {
-          //Beware with arrow functions and THIS
-          this.locations = result.data; 
-          //Some flash message
-        }).catch(e => {
-        console.log('Error get: ');
-        console.log(e);
-      });
+      .then(function () {
+        //Some flash alert-text 
+        console.log(self)
+        self.stars = '';
+        self.drawRating();
+        document.getElementsByClassName("circle-loader")[0].classList.toggle("load-complete");
       }).catch(e => {
         console.log('Error in post: ');
         console.log(e);
       });
 
       this.resetInputs();
+
+      const delay = window.setInterval(function(){
+        this.loader = false;
+        window.clearInterval(delay);
+      }, 2500);
+
     },
+
     resetInputs: function(){
       this.btnEdit = true;
       const inputs = document.querySelectorAll("input[type=text]");
@@ -352,8 +363,6 @@ export default {
     }
   }
 }
-
-
 
 </script>
 
@@ -455,8 +464,6 @@ export default {
     cursor: pointer;
 }
 
-
-
 .map-state-information {
     padding: 2em;
     color: #fff;
@@ -490,6 +497,7 @@ export default {
 }
 
 .details-display{
+  margin-top: 3.5em;
   font-size: large;
 }
 
@@ -506,4 +514,78 @@ export default {
   float: right;
   display: inline-grid;
 }
+
+.circle-loader {
+  margin-bottom: 3.5em;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-left-color: #5cb85c;
+  animation: loader-spin 1.2s infinite linear;
+  position: relative;
+  vertical-align: top;
+  border-radius: 50%;
+  width: 3em;
+  height: 3em;
+  float: right;
+}
+
+.load-complete {
+  -webkit-animation: none;
+  animation: none;
+  border-color: #5cb85c;
+  transition: border 500ms ease-out;
+}
+
+.checkmark {
+  display: none;
+}
+.checkmark.draw:after {
+  animation-duration: 800ms;
+  animation-timing-function: ease;
+  animation-name: checkmark;
+  transform: scaleX(-1) rotate(135deg);
+}
+.checkmark:after {
+  opacity: 1;
+  height: 3.5em;
+  width: 1.75em;
+  transform-origin: left top;
+  border-right: 3px solid #5cb85c;
+  border-top: 3px solid #5cb85c;
+  content: '';
+  left: 1.75em;
+  top: 3.5em;
+  position: absolute;
+}
+
+@keyframes loader-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes checkmark {
+  0% {
+    height: 0;
+    width: 0;
+    opacity: 1;
+  }
+  20% {
+    height: 0;
+    width: 1.75em;
+    opacity: 1;
+  }
+  40% {
+    height: 3.5em;
+    width: 1.75em;
+    opacity: 1;
+  }
+  100% {
+    height: 3.5em;
+    width: 1.75em;
+    opacity: 1;
+  }
+}
+
 </style>
