@@ -35,11 +35,7 @@
         <!-- Camp Details -->
         <section class="details-display" v-if="isSelected">
           <h3>Details:</h3> 
-
-          <div v-show="loader" class="circle-loader">
-            <div class="checkmark draw"></div>
-          </div>
-
+          
           <button v-show="btnEdit" class='detailsBtn btn btn-info' v-on:click="changeEdit"><i class="far fa-edit"></i>Edit</button>
           <input type="submit" value="Save Changes" v-show="!btnEdit" class="detailsBtn btn btn-success" v-on:click="saveEdit">
           <input v-model='camp.name' v-on:change='changeName(camp.name)' disabled class="dataDetails" type="text" id="name" name="name" required
@@ -308,7 +304,6 @@ export default {
     },
 
     saveEdit: function (){
-      this.loader = true;
       let self = this;
       let localCamp = this.locations.features.find(x => x.properties.loc_id == this.camp.loc_id);
       if(this.updateProp.name){
@@ -330,22 +325,11 @@ export default {
       axios.post('/locations/update', this.camp)
       .then(function () {
         //Some flash alert-text 
-        console.log(self)
-        self.stars = '';
-        self.drawRating();
-        document.getElementsByClassName("circle-loader")[0].classList.toggle("load-complete");
       }).catch(e => {
         console.log('Error in post: ');
         console.log(e);
       });
-
       this.resetInputs();
-
-      const delay = window.setInterval(function(){
-        this.loader = false;
-        window.clearInterval(delay);
-      }, 2500);
-
     },
 
     resetInputs: function(){
