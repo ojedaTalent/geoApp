@@ -29,7 +29,7 @@ This version update the locations details every **4s** with a *setInterval* meth
 So, to avoid **excessive** request to db, there is a *button* below the camp details to **stop** the interval. This will stop the automatic update.
 
 The db is a single table db, it uses a geogaphy field for lat & long properties:
-![Image of db_table](https://github.com/ojedaTalent/geoApp/locations.png)
+![Image of db_table](https://github.com/ojedaTalent/geoApp/blob/master/locations.png)
 
 
 
