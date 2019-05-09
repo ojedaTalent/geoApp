@@ -127,8 +127,6 @@ export default {
       ]
     } */
     /* this.locations = locationsAux; */
-    console.log("1");
-    console.log(axios);
     axios.get('/locations')
     .then(result => {
       //Beware with arrow functions and THIS
@@ -321,12 +319,9 @@ export default {
         this.camp.rating = this.updateProp.rating;
         localCamp.properties.rating = this.updateProp.rating;
       }
-      console.log("2");
-      console.log(axios);
-      axios.get('/update', this.camp)
+      axios.post('/locations/update', this.camp)
       .then(result => {
         //Some flash message
-        console.log(result);
       }).catch(e => {
         console.log('Error in: ');
         console.log(e);

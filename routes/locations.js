@@ -10,7 +10,7 @@ const express   = require('express'),
         */
 
 //INDEX - Display all marks
-router.get('/locations', (req, res) => {
+router.get('/', (req, res) => {
     const featureCollections = 
         " SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features " +
             'FROM ( ' +
@@ -23,7 +23,6 @@ router.get('/locations', (req, res) => {
                     'ON lg.loc_id = lp.loc_id  ' +
                 ') '+ 
         'As f ';
-        console.log(featureCollections);
     client.query(featureCollections)
     .then(result => {
         /* result.rows[0]. = features Array (6) */
@@ -38,16 +37,12 @@ router.get('/locations', (req, res) => {
 });
 
 //Update a camp
-router.get('/update', (req, res) => {
-    console.log(req);
-    const query = `UPDATE locations SET loc_name = ${req.camp.name},  status = ${req.camp.status}, raiting = ${req.camp.rating} WHERE loc_id = ${req.camp.loc_id}`;
-    console.log(query);
+router.post('/update', (req, res) => {
+    const query = `UPDATE locations SET loc_name = '${req.body.name}',  status = '${req.body.status}', rating = ${req.body.rating} WHERE loc_id = ${req.body.loc_id}`;
     client.query(query)
     .then(result => {
-        debugger;
         res.status(200).send(result);
       }).catch(e => {
-          debugger;
             console.error('Something wrong getting marks info: '+ e.stack);
             res.status(500).send(e);
         })
