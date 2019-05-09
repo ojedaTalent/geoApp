@@ -321,9 +321,17 @@ export default {
       }
       axios.post('/locations/update', this.camp)
       .then(result => {
-        //Some flash message
+        axios.get('/locations')
+        .then(result => {
+          //Beware with arrow functions and THIS
+          this.locations = result.data; 
+          //Some flash message
+        }).catch(e => {
+        console.log('Error get: ');
+        console.log(e);
+      });
       }).catch(e => {
-        console.log('Error in: ');
+        console.log('Error in post: ');
         console.log(e);
       });
 
