@@ -45,16 +45,17 @@ body {
   }
 
 .slideshow { 
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 0;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background-color: black;
+}
 
   .slideshow li { 
     width: 100%;
@@ -67,7 +68,7 @@ body {
     background-repeat: no-repeat; /* No repeat vertically or horizontally */
     opacity: 0;
     z-index: 0;
-    animation: imageAnimation 50s linear infinite; 
+    animation: imageAnimation 25s linear infinite; 
   }
   
   .slideshow li:nth-child(1) { 
@@ -75,19 +76,19 @@ body {
   }
   .slideshow li:nth-child(2) { 
     background-image: url(https://lh5.ggpht.com/p/AF1QipN-IwWaJ5raPjGUYajEI7VIdQnSwzV8o2Kjpc46=w1304);
-    animation-delay: 10s; 
+    animation-delay: 5s; 
   }
   .slideshow li:nth-child(3) { 
     background-image: url(https://lh5.ggpht.com/p/AF1QipNg4Bcx0jTfEn_0U6qy0AeBxSHM4PqrkbFxZU2U=w1304);
-    animation-delay: 20s; 
+    animation-delay: 10s; 
   }
   .slideshow li:nth-child(4) { 
     background-image: url(https://lh5.ggpht.com/p/AF1QipND92QJwRa8TTU--rka97MvXkavK0b_CcFnm91N=w1304);
-    animation-delay: 30s; 
+    animation-delay: 15s; 
   }
   .slideshow li:nth-child(5) { 
     background-image: url(https://lh5.ggpht.com/p/AF1QipMe6__2jsXQ6Zl8hsyvc-rO1re2fzN90VOL8vyW=w1304);
-    animation-delay: 40s; 
+    animation-delay: 20s; 
   }
 
   @keyframes imageAnimation { 

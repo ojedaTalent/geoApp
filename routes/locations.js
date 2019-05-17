@@ -1,13 +1,7 @@
 const express   = require('express'),
     router      = express.Router(),
-    middleware  = require('../middleware'),
     client = require('../Controllers/database/pg_connection');
     client.connect();
-/* SELECT row_to_json(fc) " + 
-        "FROM ( 
-            ') ' +
-        'As fc '
-        */
 
 //INDEX - Display all marks
 router.get('/', (req, res) => {
@@ -25,10 +19,6 @@ router.get('/', (req, res) => {
         'As f ';
     client.query(featureCollections)
     .then(result => {
-        /* result.rows[0]. = features Array (6) */
-        /* for (let row of result.rows) {
-            console.log(JSON.stringify(row));
-        } */
         res.status(200).send(result.rows[0]);
     }).catch(e => {
         console.error('Something wrong getting marks info: '+ e.stack);
@@ -40,6 +30,19 @@ router.get('/', (req, res) => {
 router.post('/update', (req, res) => {
     const query = `UPDATE locations SET loc_name = '${req.body.name}',  status = '${req.body.status}', rating = ${req.body.rating} WHERE loc_id = ${req.body.loc_id}`;
     client.query(query)
+    .then(result => {
+        res.status(200).send(result);
+      }).catch(e => {
+            console.error('Something wrong getting marks info: '+ e.stack);
+            res.status(500).send(e);
+        })
+});
+
+//Insert a camp
+router.post('/insert', (req, res) => {
+    const query = 'INSERT INTO locations(loc_name, geog, status, rating, picture) VALUES ($1, ST_GeogFromText($2), $3, $4, $5) RETURNING loc_id';
+    const values = [req.body.name, req.body.locations, req.body.status, req.body.rating, req.body.picture];
+    client.query(query, values)
     .then(result => {
         res.status(200).send(result);
       }).catch(e => {
