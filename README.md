@@ -2,6 +2,10 @@
 
 Here is the **geoApp** challenge
 
+**V2 is now HERE**
+* Draggable Markers for add new spots
+* Picture added to camps details
+
 This challenge was made with:
 - **Express**
 - **Vue**
@@ -19,12 +23,7 @@ In this **version 1.0** you can see and edit:
 * Kind of site
 * Rating
 
-Further versions will have implement:
-* Draggable Markers for add new spots
-* A loading effect when you update the camp's details
-* A pop-up picture whe you click the spot
-
-This version update the locations details every **4s** with a *setInterval* method asking to the **db** for the data.
+This version update locations every **4s** with a *setInterval* method asking to the **db** for the data.
 
 So, to avoid **excessive** request to db, there is a *button* below the camp details to **stop** the interval. This will stop the automatic update.
 
